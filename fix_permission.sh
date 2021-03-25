@@ -9,6 +9,13 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
+# check SuiteCRM is running under `apache` user
+test_apache=`apachectl -S | grep User | awk '{ print $2}' |  awk -F '=' '{ print $2}'`
+if ! [ $test_apache = '"apache"' ];  then
+    echo "User running web server is not 'apache', aborting."
+    exit 1
+fi
+
 # Check that we are in a SuiteCRM DocumentRoot by
 # checking files presence
 FILES='suitecrm_version.php sugar_version.json config.php config_override.php'
